@@ -71,7 +71,6 @@ public class Spawner : MonoBehaviour
         {
             _pool.Release(cube);
             cube.SetColor(Color.white);
-            yield break;
         }
     }
 }
