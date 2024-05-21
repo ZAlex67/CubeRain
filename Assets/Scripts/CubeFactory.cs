@@ -9,7 +9,6 @@ public class CubeFactory : SpawnerGeneric<Cube>
     [SerializeField] private BombFactory _bombFactory;
     [SerializeField] private float _repeatRate = 1f;
 
-    private Color[] _colors = new Color[] { Color.green, Color.black, Color.blue, Color.red };
     private int _cubeCount;
     private int _cubeActiveCount;
 
@@ -18,41 +17,21 @@ public class CubeFactory : SpawnerGeneric<Cube>
 
     private void Start()
     {
-        InvokeRepeating(nameof(GetPrefab), 0f, _repeatRate);
+        StartCoroutine(RepeatCube());
     }
 
-    private void OnTriggerEnter(Collider other)
+    public override void ObjectRelease(Cube cube)
     {
-        if (other.TryGetComponent(out Cube cube) && cube.Renderer.material.color == Color.white)
-        {
-            cube.SetColor(_colors[Random.Range(0, _colors.Length)]);
-            StartCoroutine(LifeTime(cube));
-        }
-    }
-
-    private IEnumerator LifeTime(Cube cube)
-    {
-        float minTime = 2f;
-        float maxTime = 5f;
-
-        WaitForSeconds waitRelease = new WaitForSeconds(Random.Range(minTime, maxTime));
-
-        yield return waitRelease;
-
-        if (cube.isActiveAndEnabled)
-        {
-            Pool.Release(cube);
-            cube.SetColor(Color.white);
-            _bombFactory.SetPosition(cube);
-            _bombFactory.GetPrefab();
-        }
+        Pool.Release(cube);
     }
 
     protected override Cube Init()
     {
         _cubeCount++;
         CubeNumberChanged?.Invoke(_cubeCount);
-        
+        _cube.SetCubeFactory(this);
+        _cube.SetBombFactory(_bombFactory);
+
         return Instantiate(_cube);
     }
 
@@ -72,5 +51,16 @@ public class CubeFactory : SpawnerGeneric<Cube>
 
         _cubeActiveCount = Pool.CountActive;
         CubeActiveChanged?.Invoke(_cubeActiveCount);
+    }
+
+    private IEnumerator RepeatCube()
+    {
+        WaitForSeconds wait = new WaitForSeconds(_repeatRate);
+
+        while (true)
+        {
+            GetPrefab();
+            yield return wait;
+        }
     }
 }

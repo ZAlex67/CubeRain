@@ -24,6 +24,8 @@ public abstract class SpawnerGeneric<T> : MonoBehaviour where T : MonoBehaviour
         Pool.Get();
     }
 
+    public abstract void ObjectRelease(T prefab);
+
     protected abstract T Init();
     protected abstract void ActionOnGet(T prefab);
 }

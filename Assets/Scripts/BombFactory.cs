@@ -1,12 +1,9 @@
 using System;
-using System.Collections;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class BombFactory : SpawnerGeneric<Bomb>
 {
     [SerializeField] private Bomb _bomb;
-    [SerializeField] private float _coefficient;
 
     private Vector3 _bombPosition;
     private int _bombCount;
@@ -15,28 +12,9 @@ public class BombFactory : SpawnerGeneric<Bomb>
     public event Action<int> BombNumberChanged;
     public event Action<int> BombActiveChanged;
 
-    private IEnumerator TimeExplosion(Bomb bomb)
+    public override void ObjectRelease(Bomb bomb)
     {
-        float minTime = 2f;
-        float maxTime = 5f;
-        float alphaStop = 0f;
-        float alpha = 1f;
-
-        float currentTime = Random.Range(minTime, maxTime);
-
-        while (currentTime > float.Epsilon)
-        {
-            bomb.SetAlpha(Mathf.MoveTowards(bomb.Renderer.material.color.a, alphaStop, _coefficient * Time.deltaTime));
-            currentTime -= Time.deltaTime;
-            yield return null;
-        }
-
-        if (bomb.isActiveAndEnabled)
-        {
-            bomb.Explosion.Explode();
-            Pool.Release(bomb);
-            bomb.SetAlpha(alpha);
-        }
+        Pool.Release(bomb);
     }
 
     public void SetPosition(Cube cube)
@@ -48,6 +26,7 @@ public class BombFactory : SpawnerGeneric<Bomb>
     {
         _bombCount++;
         BombNumberChanged?.Invoke(_bombCount);
+        _bomb.SetBombFactory(this);
 
         return Instantiate(_bomb);
     }
@@ -58,7 +37,7 @@ public class BombFactory : SpawnerGeneric<Bomb>
         bomb.Rigidbody.velocity = Vector3.zero;
         bomb.gameObject.SetActive(true);
 
-        StartCoroutine(TimeExplosion(bomb));
+        StartCoroutine(bomb.TimeExplosion());
 
         _bombActiveCount = Pool.CountActive;
         BombActiveChanged?.Invoke(_bombActiveCount);

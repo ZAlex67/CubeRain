@@ -119,7 +119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23975049a20ff4844ba0bb44e960e338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bombFactory: {fileID: 0}
+  _cubeFactory: {fileID: 4599974415812843073, guid: a2173e9fa3fecd641ad099e7ae87ce94, type: 3}
+  _bombFactory: {fileID: 3361058686066200832, guid: a2173e9fa3fecd641ad099e7ae87ce94, type: 3}
 --- !u!54 &3633955696424107978
 Rigidbody:
   m_ObjectHideFlags: 0
