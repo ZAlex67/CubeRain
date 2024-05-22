@@ -1,38 +1,20 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class CubeFactory : SpawnerGeneric<Cube>
 {
-    [SerializeField] private Cube _cube;
     [SerializeField] private BombFactory _bombFactory;
     [SerializeField] private float _repeatRate = 1f;
-
-    private int _cubeCount;
-    private int _cubeActiveCount;
-
-    public event Action<int> CubeNumberChanged;
-    public event Action<int> CubeActiveChanged;
 
     private void Start()
     {
         StartCoroutine(RepeatCube());
     }
 
-    public override void ObjectRelease(Cube cube)
+    protected override void InitPrefab(Cube cube)
     {
-        Pool.Release(cube);
-    }
-
-    protected override Cube Init()
-    {
-        _cubeCount++;
-        CubeNumberChanged?.Invoke(_cubeCount);
-        _cube.SetCubeFactory(this);
-        _cube.SetBombFactory(_bombFactory);
-
-        return Instantiate(_cube);
+        cube.SetBombFactory(_bombFactory);
+        cube.SetCubeFactory(this);
     }
 
     protected override void ActionOnGet(Cube cube)
@@ -45,12 +27,8 @@ public class CubeFactory : SpawnerGeneric<Cube>
 
         Vector3 newPosition = new Vector3(Random.Range(minX, maxX), y, Random.Range(minZ, maxZ));
 
-        cube.transform.position = newPosition;
-        cube.Rigidbody.velocity = Vector3.zero;
-        cube.gameObject.SetActive(true);
-
-        _cubeActiveCount = Pool.CountActive;
-        CubeActiveChanged?.Invoke(_cubeActiveCount);
+        base.ActionOnGet(cube);
+        ActionGetPrefab(cube, newPosition);
     }
 
     private IEnumerator RepeatCube()

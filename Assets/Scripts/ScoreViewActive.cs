@@ -17,14 +17,14 @@ public class ScoreViewActive : MonoBehaviour
 
     private void OnEnable()
     {
-        _cubeFactory.CubeActiveChanged += OnCubeActiveChanged;
-        _bombFactory.BombActiveChanged += OnBombActiveChanged;
+        _cubeFactory.ActiveChanged += OnCubeActiveChanged;
+        _bombFactory.ActiveChanged += OnBombActiveChanged;
     }
 
     private void OnDisable()
     {
-        _cubeFactory.CubeActiveChanged -= OnCubeActiveChanged;
-        _bombFactory.BombActiveChanged -= OnBombActiveChanged;
+        _cubeFactory.ActiveChanged -= OnCubeActiveChanged;
+        _bombFactory.ActiveChanged -= OnBombActiveChanged;
     }
 
 
@@ -40,6 +40,6 @@ public class ScoreViewActive : MonoBehaviour
 
     private void ActiveChanged()
     {
-        _activeCount.text = "Active: " + (_cubeCount + _bombCount).ToString();
+        _activeCount.text = "Active Cube: " + _cubeCount.ToString() + ";" + " Active Bomb: " + _bombCount.ToString();
     }
 }

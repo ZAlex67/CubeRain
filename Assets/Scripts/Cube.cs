@@ -9,23 +9,21 @@ public class Cube : MonoBehaviour
     [SerializeField] private BombFactory _bombFactory;
 
     private Renderer _renderer;
-    private Rigidbody _rigidbody;
     private Color[] _colors = new Color[] { Color.green, Color.black, Color.blue, Color.red };
-
-    public Rigidbody Rigidbody => _rigidbody;
+    private bool _isWhite = true;
 
     private void Awake()
     {
         _renderer = GetComponent<Renderer>();
-        _rigidbody = GetComponent<Rigidbody>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Ground ground) && _renderer.material.color == Color.white)
+        if (other.TryGetComponent(out Ground ground) && _isWhite)
         {
             SetColor(_colors[Random.Range(0, _colors.Length)]);
             StartCoroutine(LifeTime());
+            _isWhite = false;
         }
     }
 
@@ -55,8 +53,9 @@ public class Cube : MonoBehaviour
 
         if (isActiveAndEnabled)
         {
-            _cubeFactory.ObjectRelease(this);
+            _cubeFactory.ReleaseObject(this);
             SetColor(Color.white);
+            _isWhite = true;
             _bombFactory.SetPosition(this);
             _bombFactory.GetPrefab();
         }

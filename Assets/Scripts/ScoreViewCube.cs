@@ -1,22 +1,21 @@
 using TMPro;
 using UnityEngine;
 
-public class ScoreViewCube : MonoBehaviour
+public class ScoreViewCube : ScoreView<CubeFactory>
 {
-    [SerializeField] private CubeFactory _cubeFactory;
     [SerializeField] private TMP_Text _scoreCube;
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
-        _cubeFactory.CubeNumberChanged += OnCubeNumberChanged;
+        Factory.NumberChanged += OnNumberChanged;
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
-        _cubeFactory.CubeNumberChanged -= OnCubeNumberChanged;
+        Factory.NumberChanged -= OnNumberChanged;
     }
 
-    private void OnCubeNumberChanged(int score)
+    protected override void OnNumberChanged(int score)
     {
         _scoreCube.text = "Cube: " + score.ToString();
     }    

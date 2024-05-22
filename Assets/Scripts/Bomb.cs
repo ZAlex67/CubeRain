@@ -10,23 +10,12 @@ public class Bomb : MonoBehaviour
     [SerializeField] private BombFactory _bombFactory;
 
     private Renderer _renderer;
-    private Rigidbody _rigidbody;
     private Explosion _explosion;
-
-    public Rigidbody Rigidbody => _rigidbody;
 
     private void Awake()
     {
         _renderer = GetComponent<Renderer>();
-        _rigidbody = GetComponent<Rigidbody>();
         _explosion = GetComponent<Explosion>();
-    }
-
-    public void SetAlpha(float color)
-    {
-        Color colorNew = _renderer.material.color;
-        colorNew.a = color;
-        _renderer.material.color = colorNew;
     }
 
     public void SetBombFactory(BombFactory bombFactory)
@@ -53,8 +42,15 @@ public class Bomb : MonoBehaviour
         if (isActiveAndEnabled)
         {
             _explosion.Explode();
-            _bombFactory.ObjectRelease(this);
+            _bombFactory.ReleaseObject(this);
             SetAlpha(alpha);
         }
+    }
+
+    private void SetAlpha(float color)
+    {
+        Color colorNew = _renderer.material.color;
+        colorNew.a = color;
+        _renderer.material.color = colorNew;
     }
 }

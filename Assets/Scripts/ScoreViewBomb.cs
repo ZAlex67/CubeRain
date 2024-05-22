@@ -1,22 +1,21 @@
 using TMPro;
 using UnityEngine;
 
-public class ScoreViewBomb : MonoBehaviour
+public class ScoreViewBomb : ScoreView<BombFactory>
 {
-    [SerializeField] private BombFactory _bombFactory;
     [SerializeField] private TMP_Text _scoreBomb;
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
-        _bombFactory.BombNumberChanged += OnBombNumberChanged;
+        Factory.NumberChanged += OnNumberChanged;
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
-        _bombFactory.BombNumberChanged -= OnBombNumberChanged;
+        Factory.NumberChanged -= OnNumberChanged;
     }
 
-    private void OnBombNumberChanged(int score)
+    protected override void OnNumberChanged(int score)
     {
         _scoreBomb.text = "Bomb: " + score.ToString();
     }
